@@ -6,44 +6,49 @@ import java.util.Scanner;
 
 public class Generator {
 
-    private static Scanner userInput = new Scanner(System.in);
-
     public static void main(String[] args) {
-
-        userEntries userEntries = new userEntries();
+        UserEntries userEntries = new UserEntries();
+        Scanner input = new Scanner(System.in);
         List<String> draftOrder = new ArrayList<>();
 
         while (true) {
-            System.out.println("[1] add new manager");
-            System.out.println("[2] calculate draft order");
-            System.out.println("[3] exit program");
-            System.out.println("Enter selection: ");
-            String userChoice = userInput.nextLine();
+            //print out menu
+            UserOutput.getMenuHeader();
+            UserOutput.getMainMenu();
+            //get menu selection choice
+            String choice = UserInput.getMenuChoice();
 
-            System.out.println();
-
-            if (userChoice.equals("1")) {
-                System.out.println("Enter team manager name: ");
-                String managerName = userInput.nextLine();
-
-                System.out.println("Enter place finished last season (number): ");
-                Integer place = Integer.parseInt(userInput.nextLine());
-
-                userEntries.addEntry(managerName, place);
-
-            } else if (userChoice.equals("2")) {
-                for (Entry entry: userEntries.getEntries()) {
-                    String name = userEntries.getRandom();
-                    if (!draftOrder.contains(name)) {
+            if (choice.equals("1")){
+                //Add manager, place (weight) to entries list
+                System.out.println("Manager Name: ");
+                String name = input.nextLine();
+                System.out.println("Place finished last season: ");
+                double weight = Double.parseDouble(input.nextLine());
+                userEntries.addEntry(name, weight);
+            } else if (choice.equals("2")){
+                //display entries already added to entries list
+                userEntries.getEntries();
+            } else if (choice.equals("3")){
+                //calculate draft order (weighted random) and return new List draftOrder that includes ALL entries from entries list
+                List<Entry> entries = userEntries.getListOfEntries();
+                while (draftOrder.size() < entries.size()){
+                    String name = userEntries.getRandom(entries);
+                    if (!draftOrder.contains(name)){
                         draftOrder.add(name);
                     }
                 }
-                for (int i = 0; i < draftOrder.size(); i++){
-                    System.out.println((i + 1) + ". " + draftOrder.get(i));
+                int count = 1;
+                for (String name: draftOrder) {
+                    System.out.println(count + "." + name);
+                    count++;
                 }
-                System.out.println("");
-            } else {
+
+
+            } else if (choice.equals("4")){
+                //exit program
                 break;
+            } else {
+                System.out.println("Enter a valid option. Try again");;
             }
         }
     }

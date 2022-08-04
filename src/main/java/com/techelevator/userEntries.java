@@ -1,5 +1,6 @@
 package com.techelevator;
 
+import java.awt.dnd.DragGestureEvent;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
@@ -8,48 +9,60 @@ import java.util.Random;
 
 
 
-public class userEntries {
-
+public class UserEntries {
     private List<Entry> entries = new ArrayList<>();
     private double accumulatedWeight;
-    private Random random = new Random();
+    private Random rand = new Random();
+    private List<String> draftOrder = new ArrayList<>();
 
+    public void addEntry(String name, double weight) {
 
-
-
-    public void addEntry (String name, Integer weight) {
         accumulatedWeight += weight;
         Entry newEntry = new Entry();
-        newEntry.name = name;
-        newEntry.accumulatedWeight = accumulatedWeight;
+        newEntry.setName(name);
+        newEntry.setWeight((int) weight);
+        newEntry.setAccumulatedWeight(accumulatedWeight);
         entries.add(newEntry);
     }
 
-    public List<Entry> getEntries() {
+    public void getEntries() {
+        for (Entry entry : entries) {
+            System.out.println(entry.getName() + ", " + entry.getWeight());
+        }
+    }
+
+    public List<Entry> getListOfEntries() {
         return entries;
     }
 
-    public String getRandom() {
-        double r = random.nextDouble() * accumulatedWeight;
-
-        for (Entry entry: entries) {
-            if (entry.accumulatedWeight >= r) {
-                return entry.name;
-                }
-            }
-        return null;
+    public String getRandom(List<Entry> entries) {
+        double completeWeight = 0.0;
+        for (Entry entry : entries) {
+            completeWeight += entry.getWeight();
         }
+        double r = Math.random() * completeWeight;
+        double countWeight = 0.0;
+        for (Entry entry : entries) {
+            countWeight += entry.getWeight();
+            if (countWeight >= r) {
+                return entry.getName();
+            }
+        }
+        return null;
+    }
 
-
-//    public Integer getSize() {
-//        return draftOrder.size();
-//    }
-
-
-//    public List<String> getDraftOrder() {
+//    public List<String> generateDraftOrder() {
+//        while (draftOrder.size() < entries.size()) {
+//            String name = getRandom(entries);
+//            if (!draftOrder.contains(name)) {
+//                draftOrder.add(name);
+//            }
+//        }
 //        return draftOrder;
 //    }
 
 }
+
+
 
 
